@@ -6,7 +6,18 @@ export const getUsers = async () => {
         const response = await axios.get(URL_API);
         const data = response.data;
         if (response.status === 200) {
-            console.log(data)
+            return data;
+        }
+    } catch (error) {
+        return { status: false, error: error }
+    }
+}
+
+export const getUserById = async (id) => {
+    try {
+        const response = await axios.get(URL_API + '/' + id);
+        const data = response.data;
+        if (response.status === 200) {
             return data;
         }
     } catch (error) {
@@ -26,10 +37,11 @@ export const editUser = async (id, data) => {
     }
 }
 
-export const deleteUser = async (id) => {
+export const userDelete = async (id) => {
     try {
         const response = await axios.delete(URL_API + '/' + id);
         const data = response.data;
+        console.log(data)
         if (response.status === 200) {
             return data;
         }

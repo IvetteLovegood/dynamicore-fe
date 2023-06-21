@@ -6,7 +6,18 @@ export const getContacts = async () => {
         const response = await axios.get(URL_API);
         const data = response.data;
         if (response.status === 200) {
-            console.log(data)
+            return data;
+        }
+    } catch (error) {
+        return { status: false, error: error }
+    }
+}
+
+export const getContactsById = async (id) => {
+    try {
+        const response = await axios.get(URL_API+ '/' + id);
+        const data = response.data;
+        if (response.status === 200) {
             return data;
         }
     } catch (error) {
@@ -26,7 +37,7 @@ export const editContact = async (id, data) => {
     }
 }
 
-export const deleteContact = async (id) => {
+export const contactDelete = async (id) => {
     try {
         const response = await axios.delete(URL_API + '/' + id);
         const data = response.data;

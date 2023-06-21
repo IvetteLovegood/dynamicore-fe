@@ -1,11 +1,9 @@
-// components/Table.js
+//TABLE COMPONENT
 import React, { useEffect } from 'react';
 
-const Table = ({ headers, rows, controls }) => {
+import { FaEye, FaEdit, FaTrash } from 'react-icons/fa';
 
-    useEffect(() => {
-    }, []);
-
+const Table = ({ headers, rows, controls, config }) => {
     return (
         <div className="overflow-x-auto">
             <div className="min-w-screen bg-gray-100 flex items-center justify-center bg-gray-100 font-sans overflow-hidden">
@@ -17,16 +15,35 @@ const Table = ({ headers, rows, controls }) => {
                                     {headers.map((header, index) => (
                                         <th key={index} className="py-3 px-6 text-left">{header}</th>
                                     ))}
-                                    <th className="py-3 px-6 text-center">Controles</th>
+                                    <th className="py-3 px-6 text-center">Controls</th>
                                 </tr>
                             </thead>
                             <tbody className="text-gray-600 text-sm font-light">
                                 {rows.map((row, index) => (
                                     <tr key={row.id} className="border-b border-gray-200 hover:bg-gray-100">
-                                        <td className="py-3 px-6 text-left whitespace-nowrap">{row.name}</td>
-                                        <td className="py-3 px-6 text-left whitespace-nowrap">{row.email}</td>
+                                        {config.fields.map((field) => (
+                                            <td key={field} className="py-3 px-6 text-left whitespace-nowrap">{row[field]}</td>
+                                        ))}
                                         <td className="py-3 px-6 text-center">
-                                            {controls}
+                                            <div className="flex items-center justify-around">
+                                                {config.controls.map((control) => {
+                                                    const ControlIcon = {
+                                                        'viewUser': FaEye,
+                                                        'editUser': FaEdit,
+                                                        'deleteUser': FaTrash,
+                                                        'editContact': FaEdit,
+                                                        'deleteContact': FaTrash,
+                                                    }[control];
+                                                    const colorClass = {
+                                                        'viewUser': 'text-blue-500',
+                                                        'editUser': 'text-yellow-500',
+                                                        'deleteUser': 'text-red-500',
+                                                        'editContact': 'text-yellow-500',
+                                                        'deleteContact': 'text-red-500',
+                                                    }[control];
+                                                    return <ControlIcon key={control} onClick={() => controls[control](row.id)} className={`cursor-pointer ${colorClass} text-2xl`} />;
+                                                })}
+                                            </div>
                                         </td>
                                     </tr>
                                 ))}
@@ -38,5 +55,6 @@ const Table = ({ headers, rows, controls }) => {
         </div>
     );
 };
+
 
 export default Table;
