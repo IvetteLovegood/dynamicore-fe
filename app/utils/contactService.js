@@ -28,9 +28,9 @@ export const getContactsById = async (id) => {
 export const editContactbyID = async (id, data) => {
     try {
         const response = await axios.put(URL_API + '/' + id, data);
-        const data = response.data;
+        const dataResponse = response.data;
         if (response.status === 200) {
-            return data;
+            return dataResponse;
         }
     } catch (error) {
         return { status: false, error: error }

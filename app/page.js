@@ -37,6 +37,7 @@ const Home = () => {
           console.log(updateUser)
           notify("Usuario modificado correctamente", "success");
           setModalOpen(false);
+          setEditingUser(null);
           await getUsuarios();
         } else {
         let registerUser = { name, email, password }
@@ -68,6 +69,16 @@ const Home = () => {
     const handleSubmit = async (e) => {
       try {
         e.preventDefault();
+        if (editingContact) {
+          const updatedContact = {id: editingContact.id, name, phone, email }
+          console.log(editingContact.id)
+          const updateCont = await editContactbyID(editingContact.id, updatedContact);
+          console.log(updateCont)
+          notify("Contacto modificado correctamente", "success");
+          setModalOpenEdit(false);
+          setEditingContact(null);
+          showContacts(false);
+        } else {
         let userId = idUser;
         let registerContact = { userId, name, phone, email }
         const addContactForm = await addContact(registerContact);
@@ -75,9 +86,9 @@ const Home = () => {
         notify("Usuario agregado correctamente", "success");
         setModalOpenEdit(false);
         setShowContacts(false)
-        await getContactsById(userId);
+        await getContactsById(userId);}
       } catch (error) {
-        notify("Error al obtener detalles del usuario", "error");
+        notify("Error al obtener detalles del usuario", error);
       }
     };
 
@@ -86,7 +97,7 @@ const Home = () => {
         <input type="text" value={name} onChange={e => setName(e.target.value)} placeholder="Nombre" className="w-full p-2 border border-gray-300 rounded" />
         <input type="tel" value={phone} onChange={e => setPhone(e.target.value)} placeholder="Teléfono" className="w-full p-2 border border-gray-300 rounded" />
         <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="Correo electrónico" className="w-full p-2 border border-gray-300 rounded" />
-        <button type="submit" className="w-full p-2 bg-blue-500 text-white rounded">Agregar</button>
+        <button type="submit" className="w-full p-2 bg-blue-500 text-white rounded"> {editingContact ? 'Modificar' : 'Agregar'}</button>
       </form>
     );
   };
@@ -152,9 +163,9 @@ const Home = () => {
     setModalOpen(true);
    };
   const editContact = async (id) => {
-    const contactEdit = await getContactsById(id);
+    const contactEdit = await getContactsById(idUser);
     console.log(contactEdit)
-    setEditingContact(contactEdit);
+    setEditingContact(contactEdit[0]);
     setModalOpenEdit(true);
    };
 
