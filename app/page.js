@@ -8,7 +8,6 @@ const Home = () => (
     <div className="flex flex-col w-full">
       <TopBar />
       <main className="app-content flex-grow p-4">
-        {/* Aquí es donde irá el contenido principal de tu página */}dsfsd
       </main>
     </div>
   </div>

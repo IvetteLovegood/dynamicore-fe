@@ -13,7 +13,7 @@ const Sidebar = () => {
       </button>
       <nav>
         <ul className="space-y-2">
-          <li className='text-white'><Link href="/user">Users</Link></li>
+          <li className='text-white'><Link href="/users">Users</Link></li>
           <li className='text-white'><Link href="/contact">Contacts</Link></li>
         </ul>
       </nav>
