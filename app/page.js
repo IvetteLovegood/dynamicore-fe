@@ -4,8 +4,8 @@ import React, { Fragment, useEffect, useState, useMemo } from 'react';
 import Table from './components/Table';
 import Modal from './components/Modal';
 import { ToastContainer, toast } from 'react-toastify';
-import { getUsers, getUserById, userDelete, addUser } from './utils/userService';
-import { getContactsById, contactDelete, addContact } from './utils/contactService';
+import { getUsers, getUserById, userDelete, addUser, editUserByID } from './utils/userService';
+import { getContactsById, contactDelete, addContact, editContactbyID } from './utils/contactService';
 import 'react-toastify/dist/ReactToastify.css';
 
 const Home = () => {
@@ -16,24 +16,34 @@ const Home = () => {
   const [contacts, setContacts] = useState();
   const [name, setName] = useState();
   const [idUser, setIdUser] = useState();
+  const [editingUser, setEditingUser] = useState(null);
+  const [editingContact, setEditingContact] = useState(null);
 
   useEffect(() => {
     getUsuarios();
   }, []);
 
   const UserForm = () => {
-    const [name, setName] = useState('');
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+    const [name, setName] = useState(editingUser ? editingUser.name : '');
+    const [email, setEmail] = useState(editingUser ? editingUser.email : '');
+    const [password, setPassword] = useState(editingUser ? editingUser.password : '');
 
     const handleSubmit = async (e) => {
       try {
         e.preventDefault();
+        if (editingUser) {
+          const updatedUser = {id: editingUser.id, name, email, password }
+          const updateUser = await editUserByID(editingUser.id, updatedUser);
+          console.log(updateUser)
+          notify("Usuario modificado correctamente", "success");
+          setModalOpen(false);
+          await getUsuarios();
+        } else {
         let registerUser = { name, email, password }
         const agregarUsuario = await addUser(registerUser);
         notify("Usuario agregado correctamente", "success");
         setModalOpen(false);
-        await getUsuarios();
+        await getUsuarios();}
       } catch (error) {
         notify("Error al obtener detalles del usuario", "error");
       }
@@ -45,15 +55,15 @@ const Home = () => {
         <input type="text" value={name} onChange={e => setName(e.target.value)} placeholder="Nombre" className="w-full p-2 border border-gray-300 rounded" />
         <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="Correo electrónico" className="w-full p-2 border border-gray-300 rounded" />
         <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="Contraseña" className="w-full p-2 border border-gray-300 rounded" />
-        <button type="submit" className="w-full p-2 bg-blue-500 text-white rounded">Agregar</button>
+        <button type="submit" className="w-full p-2 bg-blue-500 text-white rounded">{editingUser ? 'Modificar' : 'Agregar'}</button>
       </form>
     );
   };
 
   const ContactForm = () => {
-    const [name, setName] = useState('');
-    const [phone, setPhone] = useState('');
-    const [email, setEmail] = useState('');
+    const [name, setName] = useState(editingContact ? editingContact.name : '');
+    const [phone, setPhone] = useState(editingContact ? editingContact.phone : '');
+    const [email, setEmail] = useState(editingContact ? editingContact.email : '');
 
     const handleSubmit = async (e) => {
       try {
@@ -64,7 +74,8 @@ const Home = () => {
         console.log(addContactForm)
         notify("Usuario agregado correctamente", "success");
         setModalOpenEdit(false);
-        await getContactsById(idUser);
+        setShowContacts(false)
+        await getContactsById(userId);
       } catch (error) {
         notify("Error al obtener detalles del usuario", "error");
       }
@@ -134,9 +145,21 @@ const Home = () => {
     }
   };
 
-  const editUser = (id) => { console.log(`Editing user with ID: ${id}`); };
+  const editUser = async (id) => {
+    const userEdit = await getUserById(id);
+    console.log(userEdit)
+    setEditingUser(userEdit);
+    setModalOpen(true);
+   };
+  const editContact = async (id) => {
+    const contactEdit = await getContactsById(id);
+    console.log(contactEdit)
+    setEditingContact(contactEdit);
+    setModalOpenEdit(true);
+   };
+
+
   const viewContact = (id) => { console.log(`Viewing contact with ID: ${id}`); };
-  const editContact = (id) => { console.log(`Editing contact with ID: ${id}`); };
 
   const headers = useMemo(() => ['Nombre', 'Correo electrónico'], []);
   const headersContact = useMemo(() => ['Nombre', 'Teléfono', 'Correo electrónico'], []);
@@ -166,7 +189,7 @@ const Home = () => {
           <Modal isOpen={isModalOpen} onClose={() => setModalOpen(false)}>
             <UserForm />
           </Modal>
-          <Modal isOpen={isModalOpenEdit} onClose={() => setModalOpen(false)}>
+          <Modal isOpen={isModalOpenEdit} onClose={() => setModalOpenEdit(false)}>
             <ContactForm />
           </Modal>
           {showContacts && (
