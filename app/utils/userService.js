@@ -53,9 +53,9 @@ export const userDelete = async (id) => {
 export const addUser = async (data) => {
     try {
         const response = await axios.post(URL_API, data);
-        const data = response.data;
-        if (response.status === 200) {
-            return data;
+        const responsedata = response.data;
+        if (responsedata.status === 200) {
+            return responsedata;
         }
     } catch (error) {
         return { status: false, error: error }
