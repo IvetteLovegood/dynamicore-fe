@@ -1,8 +1,17 @@
-export default function Home() {
-  return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="mb-32 grid text-center lg:mb-0 lg:grid-cols-4 lg:text-left">
-      </div>
-    </main>
-  )
-}
+import React from 'react';
+import TopBar from './components/Header';
+import Sidebar from './components/Sidebar';
+
+const Home = () => (
+  <div className="app flex">
+    <Sidebar />
+    <div className="flex flex-col w-full">
+      <TopBar />
+      <main className="app-content flex-grow p-4">
+        {/* Aquí es donde irá el contenido principal de tu página */}dsfsd
+      </main>
+    </div>
+  </div>
+);
+
+export default Home;
