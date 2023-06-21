@@ -1,16 +1,31 @@
 "use client";
 
 // pages/home.js
-import React, { useState } from 'react';
+import React, { useEffect, useState, useTransition } from 'react';
 import { FaEye, FaEdit, FaTrash } from 'react-icons/fa';
 import Table from './components/Table';
 import Modal from './components/Modal';
 import Icon from './components/Icon';
+import { getUsers } from './utils/userService';
 
 const Home = () => {
   const [isModalOpen, setModalOpen] = useState(false);
+  const [users, setUsers] = useState();
+  const [showContacts, setShowContacts] = useState(false);
 
-  const viewUser = () => { /* código para ver usuario */ };
+  useEffect(() => {
+    getUsuarios();
+   }, []);
+
+  const getUsuarios = async () => {
+    const users = await getUsers();
+    setUsers(users);
+    console.log(users)
+  }
+
+  const viewUser = () => {
+    setShowContacts(true);
+  };
   const editUser = () => { /* código para editar usuario */ };
   const deleteUser = () => { /* código para eliminar usuario */ };
 
@@ -46,7 +61,7 @@ const Home = () => {
           >
             Agregar Usuario
           </button>
-          <Table headers={headers} rows={rows} controls={userControls}/>
+          {users && <Table headers={headers} rows={users} controls={userControls} />}
           <Modal isOpen={isModalOpen} onClose={() => setModalOpen(false)}>
           </Modal>
         </main>
